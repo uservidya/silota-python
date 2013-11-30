@@ -43,7 +43,6 @@ setup(
     description='Python client for Silota API',
     long_description=README,
     test_suite = 'nose.collector',
-    setup_requires = ['nose==1.3.0'],
     install_requires=parse_requirements('requirements.txt'),    
     classifiers=[
         'Intended Audience :: Developers',

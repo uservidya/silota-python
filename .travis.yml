@@ -4,7 +4,7 @@ python:
   - 2.7
 install:
   - python setup.py develop
-  - pip install -r requirements.txt
-  - pip install -r requirements-test.txt
+  - pip install --use-mirrors -r requirements.txt
+  - pip install --use-mirrors -r requirements-test.txt
 script:
   - python setup.py test
