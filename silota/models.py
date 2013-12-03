@@ -3,6 +3,8 @@ try:
 except ImportError:
     from json import loads as json_decode, dumps as json_encode
 
+import urllib
+
 from .helpers import to_python
 from .structures import PagedKeyedListResource
 
@@ -322,7 +324,7 @@ class Templates(BaseResource):
 
 class Schema(object):
     def __init__(self):
-        self.data = {}
+        self.data = []
         self.topic = None
         self._h = None
 
@@ -503,39 +505,25 @@ class Engine(BaseResource):
         return self._h._get_resources(
             resource=('engine', self.id, 'topics'),
             obj=Topic, engine=self)
-            
+
     def build_payload(self):
-        import requests, urllib
-        url = 'http://localhost:9000/jsc/%d.js' % self.id
-        url += '?selectors=' + urllib.quote(json_encode(self.selectors)) 
-        topics = []
+        # Just to avoid circular dependencies
+        import silota as _s
+        payload = {'topics': [], 'selectors': []}
+        payload['selectors'] = [x for x in self.selectors]
+        payload['selectors'].append('#console  .form-search  .search-box  .search-query')
         for topic in self.topics:
-            topics.append({'fields': [x for x in topic.schema],
-                           'templates': {
-                               'suggest': topic.templates.suggest
-                               },
-                           'id': topic.id,
-                           'name': topic.name
-                       })
-        url += '&topics=' + urllib.quote(json_encode(topics)) 
-        r = requests.get(url)
-        
-    def serve_payload(self, production=True):
-        import pdb; pdb.set_trace()
+            d = {'id': topic.id, 'name': topic.name}
+            d['fields'] = [x for x in topic.schema]
+            d['templates'] = {}
+            d['templates']['suggest'] = topic.templates.suggest
+            payload['topics'].append(d)
 
+        url_args = urllib.quote(json_encode(payload))
+        url = '%s/jsc/%d.js?%s' % (_s.config.search_uri,
+                                   self.id, url_args)
+        r = self._h._session.get(url)
 
-    # def search(self, query, topic_id):
-    #     r = self._h._http_resource(
-    #         method='GET',
-    #         resource=('engine', self.id, 'search'),
-    #         params={'query': query,
-    #                 'topic_id': topic_id})
-    #     return r
+        r.raise_for_status()
+        return r.content
 
-    # def suggest(self, query, topic_id):
-    #     r = self._h._http_resource(
-    #         method='GET',
-    #         resource=('engine', self.id, 'suggest'),
-    #         params={'query': query,
-    #                 'topic_id': topic_id})
-    #     return r

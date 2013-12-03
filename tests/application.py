@@ -1,6 +1,6 @@
 import bottle
 import json
-from .responses import get_engines, get_topics
+from .responses import get_engines, get_topics, get_schema, get_templates
 
 SERIALIZERS = {
     'application/json': json.dumps,
@@ -9,6 +9,13 @@ SERIALIZERS = {
 SILOTA_TEST_API_KEY = 'THISISAKEY'
 
 app = bottle.Bottle()
+search_app = bottle.Bottle()
+
+
+@search_app.get('/jsc/<engine_id>.js')
+def payload_build(engine_id):
+    bottle.response.body = ''
+    return bottle.response
 
 @app.hook('before_request')
 def auth():
@@ -44,4 +51,28 @@ def topics(engine_id):
     return bottle.response
 
 
+@app.get('/topic/<topic_id>/schema/')
+def schema(topic_id):
+    bottle.response.content_type = (
+        bottle.request.headers.get('Accept', 'application/json'))
+    serializer = SERIALIZERS[bottle.response.content_type]
+
+    the_response = get_schema(topic_id = int(topic_id))
+    
+    bottle.response.body = serializer(the_response)
+    return bottle.response
+
+@app.get('/topic/<topic_id>/templates/')
+def templates(topic_id):
+    bottle.response.content_type = (
+        bottle.request.headers.get('Accept', 'application/json'))
+    serializer = SERIALIZERS[bottle.response.content_type]
+
+    the_response = get_templates(topic_id = int(topic_id))
+    
+    bottle.response.body = serializer(the_response)
+    return bottle.response
+
+
 app.mount('/v1', app)
+search_app.mount('/v1', search_app)
