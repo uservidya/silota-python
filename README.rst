@@ -2,8 +2,8 @@
 Silota
 =============================
 
-.. image:: https://travis-ci.org/silota/django-leads.png?branch=master
-        :target: https://travis-ci.org/dnmellen/django-leads
+.. image:: https://travis-ci.org/silota/silota-python.png?branch=master
+        :target: https://travis-ci.org/silota/silota-python
 
 
 Python client for Silota API_.
