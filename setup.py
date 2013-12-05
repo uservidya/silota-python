@@ -29,7 +29,7 @@ def parse_requirements(file_name):
 
 VERSION = _get_version()
 
-README = open(os.path.join(here, "README.md")).read()
+README = open(os.path.join(here, "README.rst")).read()
 #README = README + open(os.path.join(here, "CHANGES.txt")).read()
 
 setup(
@@ -40,7 +40,7 @@ setup(
     url='http://www.silota.com',
     packages=['silota'],
     license='BSD',
-    description='Python client for Silota API',
+    description='Python client for the Silota Search As A Service API',
     long_description=README,
     test_suite = 'nose.collector',
     install_requires=parse_requirements('requirements.txt'),    
