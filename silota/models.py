@@ -385,6 +385,26 @@ class Topic(BaseResource):
         id = json_decode(r.content).get('id')
         return self.engine.topics.get(id)
 
+    def update(self, name=None, value_key=None):
+        '''Update the topic'''
+        if name == None:
+            name = self.name
+        else:
+            self.name = name
+
+        if value_key == None:
+            value_key = self.value_key
+        else:
+            self.value_key = value_key
+
+        payload = {'name': name, 'value_key': value_key}
+        r = self._h._http_resource(
+            method='PUT',
+            resource=('topic', self.id),
+            data = payload
+        )
+        id = json_decode(r.content).get('id')
+        return self.engine.topics.get(id)
 
     def delete(self):
         r = self._h._http_resource(

@@ -1,0 +1,12 @@
+0.0.2 (6-DEC-2013)
+=====
+
+	* added update command to Topics so that you can change the name
+	and value field
+
+
+0.0.1 (5-DEC-2013)
+======
+
+	* initial version
+
