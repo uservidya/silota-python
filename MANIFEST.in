@@ -1,3 +1,4 @@
 include README.rst
+include CHANGES.txt
 include requirements.txt
 graft silota
